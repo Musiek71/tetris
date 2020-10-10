@@ -1,0 +1,27 @@
+package Tetris;
+
+import java.awt.*;
+
+public class ITetromino extends Tetromino{
+    public ITetromino() {
+        super(0,
+                Color.CYAN,
+                0,
+                new Point[][] {
+                        {
+                                new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(3,1)
+                        },
+                        {
+                                new Point(2, 0), new Point(2, 1), new Point(2, 2), new Point(2,3)
+                        },
+                        {
+                                new Point(0, 2), new Point(1, 2), new Point(2, 2), new Point(3,2)
+                        },
+                        {
+                                new Point(1, 0), new Point(1, 1), new Point(1, 2), new Point(1,3)
+                        },
+                }
+                );
+    }
+}
+
