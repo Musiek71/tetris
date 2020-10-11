@@ -11,7 +11,7 @@ public class Game {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Tetris");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(BOARD_WIDTH * (BLOCK_SIZE + 5), BOARD_HEIGHT * (BLOCK_SIZE + 1));
+        frame.setSize(BOARD_WIDTH * BLOCK_SIZE + 4 * BLOCK_SIZE, BOARD_HEIGHT * BLOCK_SIZE + BLOCK_SIZE);
         frame.setVisible(true);
 
         Board board = new Board();
