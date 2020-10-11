@@ -2,23 +2,26 @@ package Tetris;
 
 import javax.swing.*;
 
-import static Tetris.Game.*;
+import java.awt.*;
 
 public class Main {
+
+    public final static int GAMEBOARD_WIDTH = 12; //playing board width 10 + 2 walls
+    public final static int GAMEBOARD_HEIGHT = 25; //playing board height 20 + 4 invisible top rows + 1 bottom
+    public final static int SCOREBOARD_WIDTH = 8;
+    public final static int SCOREBOARD_HEIGHT = 25;
+    public final static int BLOCK_SIZE = 32;
+
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Tetris");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(BOARD_WIDTH * BLOCK_SIZE , BOARD_HEIGHT * BLOCK_SIZE + BLOCK_SIZE);
-        frame.setVisible(true);
+        Game game = new Game("Tetris");
+        game.setVisible(true);
+        game.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        game.setSize(  GAMEBOARD_WIDTH * BLOCK_SIZE + SCOREBOARD_WIDTH * BLOCK_SIZE + 3 * BLOCK_SIZE,
+                        GAMEBOARD_HEIGHT * BLOCK_SIZE + 3 * BLOCK_SIZE);
 
-        GameBoard gameBoard = new GameBoard();
-        frame.addKeyListener(gameBoard);
-        frame.add(gameBoard);
+        game.addKeyListener(game);
 
-        gameBoard.init();
-
-        Game game = new Game(gameBoard);
-        gameBoard.setGame(game);
+        game.init();
         game.start();
 
     }

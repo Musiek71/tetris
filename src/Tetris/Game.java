@@ -1,30 +1,46 @@
 package Tetris;
 
 import javax.sound.sampled.*;
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
-public class Game {
+import static Tetris.Main.*;
 
-    public final static int BOARD_WIDTH = 12; //playing board width 10 + 2 walls
-    public final static int BOARD_HEIGHT = 25; //playing board height 20 + 4 invisible top rows + 1 bottom
-    public final static int BLOCK_SIZE = 32;
+public class Game extends JFrame implements KeyListener {
+
 
     final static Point defaultSpawn = new Point(4,0);
 
     private GameBoard gameBoard;
+    private ScoreBoard scoreBoard;
 
     private int score = 0;
     private int totalRows = 0;
     private int level = 0;
 
-    public Game(GameBoard gameBoard) {
-        this.gameBoard = gameBoard;
+    public Game(String s) throws HeadlessException {
+        super(s);
     }
 
+    public void init() {
+        //TODO fix the scoreboard drawing
+        gameBoard = new GameBoard();
+        scoreBoard = new ScoreBoard();
+        gameBoard.setSize(GAMEBOARD_WIDTH * BLOCK_SIZE, GAMEBOARD_HEIGHT * BLOCK_SIZE);
+        scoreBoard.setSize(SCOREBOARD_WIDTH * BLOCK_SIZE, SCOREBOARD_HEIGHT * BLOCK_SIZE);
+        this.getContentPane().add(gameBoard);
+        this.add(scoreBoard, BorderLayout.EAST);
+    }
+
+
+
     public void start() {
+        gameBoard.init();
+
         gameBoard.currentTetromino = gameBoard.factory.createRandomTetromino();
 
         new Thread() {
@@ -36,7 +52,7 @@ public class Game {
                         fallDown();
                         Long time2 = System.nanoTime();
                         Long delta = (time2 - time1) / 1000000;
-                        Thread.sleep(500 - level * 50);
+                        Thread.sleep(500 - delta - level * 50);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -72,7 +88,7 @@ public class Game {
 
     public void pushTopDown(int row) {
         for (int y = row; y > 0; y--) {
-            for (int x = 1; x < BOARD_WIDTH - 1; x++) {
+            for (int x = 1; x < GAMEBOARD_WIDTH - 1; x++) {
                 gameBoard.boardMap[x][y] = gameBoard.boardMap[x][y-1];
             }
         }
@@ -96,19 +112,17 @@ public class Game {
 
     private void clearRows() {
         boolean foundFullRow;
-        ArrayList<Integer> fullRows = new ArrayList<Integer>();
         int lineCounter = 0;
 
         //find all full rows
-        for(int y = BOARD_HEIGHT - 2; y > 0; y--) {
+        for(int y = GAMEBOARD_HEIGHT - 2; y > 0; y--) {
             foundFullRow = true;
-            for (int x = 1; x < BOARD_WIDTH - 1; x++) {
+            for (int x = 1; x < GAMEBOARD_WIDTH - 1; x++) {
                 if (gameBoard.boardMap[x][y] == Color.BLACK) {
                     foundFullRow = false;
                 }
             }
             if (foundFullRow) {
-                //fullRows.add(y);
                 pushTopDown(y);
                 lineCounter++;
                 totalRows++;
@@ -164,11 +178,38 @@ public class Game {
         gameBoard.repaint();
     }
 
-    public void playClip(File file, int loop) throws LineUnavailableException, IOException, UnsupportedAudioFileException {
-        Clip clip = AudioSystem.getClip();
-        AudioInputStream ais = AudioSystem.getAudioInputStream(file);
-        clip.open(ais);
-        clip.loop(loop);
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_UP:
+                rotateLeft();
+                break;
+            case KeyEvent.VK_DOWN:
+                rotateRight();
+                break;
+            case KeyEvent.VK_LEFT:
+                moveLeft();
+                break;
+            case KeyEvent.VK_RIGHT:
+                moveRight();
+                break;
+            case KeyEvent.VK_S:
+                gameBoard.currentTetromino = gameBoard.factory.createRandomTetromino();
+                break;
+            case KeyEvent.VK_SPACE:
+                fallDown();
+                break;
+        }
+        gameBoard.repaint();
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
 
     }
 
