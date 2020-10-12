@@ -33,7 +33,7 @@ public class GameBoard extends JPanel {
 
         initTextures();
 
-        //set boardMap's borders to GREY
+        //set boardMap's borders to WALL Texture
         for (int x = 0; x < GAMEBOARD_WIDTH; x++) {
             for (int y = 0; y < GAMEBOARD_HEIGHT; y++) {
                 if (x == 0 || x == GAMEBOARD_WIDTH - 1 || y == GAMEBOARD_HEIGHT - 1) {
