@@ -27,13 +27,19 @@ public class Game extends JFrame implements KeyListener {
     }
 
     public void init() {
-        //TODO fix the scoreboard drawing
         gameBoard = new GameBoard();
         scoreBoard = new ScoreBoard();
         gameBoard.setSize(GAMEBOARD_WIDTH * BLOCK_SIZE, GAMEBOARD_HEIGHT * BLOCK_SIZE);
         scoreBoard.setSize(SCOREBOARD_WIDTH * BLOCK_SIZE, SCOREBOARD_HEIGHT * BLOCK_SIZE);
-        this.getContentPane().add(gameBoard);
-        this.add(scoreBoard, BorderLayout.EAST);
+        gameBoard.setBackground(Color.LIGHT_GRAY);
+        scoreBoard.setBackground(Color.LIGHT_GRAY);
+
+        this.getContentPane().add(gameBoard, BorderLayout.CENTER);
+        this.getContentPane().add(scoreBoard, BorderLayout.EAST);
+
+        scoreBoard.repaint();
+        gameBoard.repaint();
+
     }
 
 
@@ -76,6 +82,9 @@ public class Game extends JFrame implements KeyListener {
             updateLevel();
             newTetromino();
         }
+        scoreBoard.setScore(score);
+        scoreBoard.setLevel(level);
+        scoreBoard.setRows(totalRows);
         gameBoard.repaint();
     }
 
@@ -203,6 +212,7 @@ public class Game extends JFrame implements KeyListener {
                 break;
             case KeyEvent.VK_SPACE:
                 fallDown();
+                score++;
                 break;
         }
         gameBoard.repaint();

@@ -34,13 +34,13 @@ public class GameBoard extends JPanel {
         for (Point singlePoint : currentTetromino.getCurrentShape()) {
             g.setColor(currentTetromino.getColor());
             g.fillRect( (currentPosition.x + singlePoint.x) * BLOCK_SIZE,
-                        (currentPosition.y + singlePoint.y) * BLOCK_SIZE,
+                        (currentPosition.y + singlePoint.y - 3) * BLOCK_SIZE,
                             BLOCK_SIZE ,
                             BLOCK_SIZE
             );
             g.setColor(Color.DARK_GRAY);
             g.drawRect( (currentPosition.x + singlePoint.x) * BLOCK_SIZE,
-                    (currentPosition.y + singlePoint.y) * BLOCK_SIZE,
+                    (currentPosition.y + singlePoint.y - 3) * BLOCK_SIZE,
                     BLOCK_SIZE ,
                     BLOCK_SIZE
             );
@@ -53,12 +53,12 @@ public class GameBoard extends JPanel {
         super.paintComponent(g);
 
         for (int x = 0; x < GAMEBOARD_WIDTH; x++) {
-            for (int y = 0; y < GAMEBOARD_HEIGHT; y++) {
+            for (int y = 3; y < GAMEBOARD_HEIGHT; y++) {
                 g.setColor(boardMap[x][y]);
-                g.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                g.fillRect(x * BLOCK_SIZE, (y - 3) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
                 if (boardMap[x][y] != Color.BLACK) {
                     g.setColor(Color.DARK_GRAY);
-                    g.drawRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                    g.drawRect(x * BLOCK_SIZE, (y - 3) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
                 }
             }
         }
