@@ -27,15 +27,20 @@ public class Game extends JFrame implements KeyListener {
     }
 
     public void init() {
+        GridLayout gameLayout = new GridLayout(0, 2);
+        this.setLayout(gameLayout);
+
         gameBoard = new GameBoard();
         scoreBoard = new ScoreBoard();
-        gameBoard.setSize(GAMEBOARD_WIDTH * BLOCK_SIZE, GAMEBOARD_HEIGHT * BLOCK_SIZE);
-        scoreBoard.setSize(SCOREBOARD_WIDTH * BLOCK_SIZE, SCOREBOARD_HEIGHT * BLOCK_SIZE);
+        gameBoard.setPreferredSize(new Dimension(GAMEBOARD_WIDTH * BLOCK_SIZE, GAMEBOARD_HEIGHT * BLOCK_SIZE));
+        scoreBoard.setPreferredSize(new Dimension(SCOREBOARD_WIDTH * BLOCK_SIZE, SCOREBOARD_HEIGHT * BLOCK_SIZE));
+        //gameBoard.setSize(GAMEBOARD_WIDTH * BLOCK_SIZE, GAMEBOARD_HEIGHT * BLOCK_SIZE);
+        //scoreBoard.setSize(SCOREBOARD_WIDTH * BLOCK_SIZE, SCOREBOARD_HEIGHT * BLOCK_SIZE);
         gameBoard.setBackground(Color.LIGHT_GRAY);
         scoreBoard.setBackground(Color.LIGHT_GRAY);
 
-        this.getContentPane().add(gameBoard, BorderLayout.CENTER);
-        this.getContentPane().add(scoreBoard, BorderLayout.EAST);
+        this.getContentPane().add(gameBoard);
+        this.getContentPane().add(scoreBoard);
 
         scoreBoard.repaint();
         gameBoard.repaint();
@@ -90,7 +95,7 @@ public class Game extends JFrame implements KeyListener {
 
     public void addToBoard() {
         for (Point singlePoint : gameBoard.currentTetromino.getCurrentShape()) {
-            gameBoard.boardMap[gameBoard.currentPosition.x + singlePoint.x][gameBoard.currentPosition.y + singlePoint.y] = gameBoard.currentTetromino.getColor();
+            gameBoard.boardMap[gameBoard.currentPosition.x + singlePoint.x][gameBoard.currentPosition.y + singlePoint.y] = gameBoard.currentTetromino.getColorInt();
         }
     }
 
@@ -111,7 +116,7 @@ public class Game extends JFrame implements KeyListener {
     private boolean collidesWith(int x, int y, Point[] shape) {
         for (Point singlePoint : shape) {
             //check whether every point is empty
-            if (gameBoard.boardMap[x + singlePoint.x][y + singlePoint.y] != Color.BLACK) {
+            if (gameBoard.boardMap[x + singlePoint.x][y + singlePoint.y] != 0) {
                 return true;
             }
         }
@@ -127,7 +132,7 @@ public class Game extends JFrame implements KeyListener {
         for(int y = GAMEBOARD_HEIGHT - 2; y > 0; y--) {
             foundFullRow = true;
             for (int x = 1; x < GAMEBOARD_WIDTH - 1; x++) {
-                if (gameBoard.boardMap[x][y] == Color.BLACK) {
+                if (gameBoard.boardMap[x][y] == 0) {
                     foundFullRow = false;
                 }
             }

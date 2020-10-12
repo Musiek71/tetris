@@ -8,7 +8,7 @@ public class Main {
 
     public final static int GAMEBOARD_WIDTH = 12; //playing board width 10 + 2 walls
     public final static int GAMEBOARD_HEIGHT = 24; //playing board height 20 + 4 invisible top rows + 1 bottom
-    public final static int SCOREBOARD_WIDTH = 4;
+    public final static int SCOREBOARD_WIDTH = 12;
     public final static int SCOREBOARD_HEIGHT = 21;
     public final static int BLOCK_SIZE = 32;
 

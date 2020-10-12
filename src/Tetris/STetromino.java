@@ -5,7 +5,7 @@ import java.awt.*;
 public class STetromino extends Tetromino{
     public STetromino() {
         super(0,
-                Color.GREEN,
+                6,
                 0,
                 new Point[][] {
                         {

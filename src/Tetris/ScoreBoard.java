@@ -17,12 +17,15 @@ public class ScoreBoard extends JPanel {
 
     ScoreBoard() {
         super();
-        GridLayout layout = new GridLayout(4, 0);
+        GridLayout layout = new GridLayout(4, 1);
 
         this.setLayout(layout);
 
         try {
-            logo = ImageIO.read(new File("resources/logo.jpg"));
+            logo = ImageIO.read(new File("logo.png"));
+
+            JLabel titlePanel = new JLabel(new ImageIcon(logo));
+            this.add(titlePanel);
 
 //        titlePanel.setFont(new Font("Verdana", Font.BOLD, 24));
 //        titlePanel.setForeground(Color.BLACK);
@@ -30,9 +33,6 @@ public class ScoreBoard extends JPanel {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        JLabel titlePanel = new JLabel(new ImageIcon(logo));
-        this.add(titlePanel);
 
         levelLabel = new JLabel("Level:" + 0);
         levelLabel.setFont(new Font("Verdana", Font.BOLD, 24));

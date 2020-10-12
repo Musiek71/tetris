@@ -4,19 +4,19 @@ import java.awt.*;
 
 public abstract class Tetromino {
     private int rotation;
-    private Color color;
+    private int colorInt;
     private Point[] currentShape;
     private Point[][] shapes;
 
-    public Tetromino(int rotation, Color color, int shape, Point[][] shapes) {
+    public Tetromino(int rotation, int colorInt, int shape, Point[][] shapes) {
         this.rotation = rotation;
-        this.color = color;
+        this.colorInt = colorInt;
         this.currentShape = shapes[shape];
         this.shapes = shapes;
     }
 
-    public Color getColor() {
-        return color;
+    public int getColorInt() {
+        return colorInt;
     }
 
     public Point[] getCurrentShape() {
