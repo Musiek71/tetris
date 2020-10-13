@@ -52,7 +52,7 @@ public class GameBoard extends JPanel {
 
     void initTextures() {
         try {
-            wallTexture = ImageIO.read(new File("cobble.png"));
+            wallTexture = ImageIO.read(new File("wall.png"));
             iBlockTexture = ImageIO.read(new File("itext.png"));
             jBlockTexture = ImageIO.read(new File("jtext.png"));
             lBlockTexture = ImageIO.read(new File("ltext.png"));

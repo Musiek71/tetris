@@ -10,7 +10,7 @@ import static Tetris.Main.*;
 public class Game extends JFrame implements KeyListener {
 
 
-    final static Point defaultSpawn = new Point(4,0);
+    final static Point defaultSpawn = new Point(GAMEBOARD_WIDTH / 2 - 2,0);
 
     private GameBoard gameBoard;
     private ScoreBoard scoreBoard;
@@ -49,15 +49,19 @@ public class Game extends JFrame implements KeyListener {
         //prepares the gameBoard
         gameBoard.init();
 
+        //reset the scoreboard values
         score = 0;
         totalRows = 0;
         level = 0;
 
+        //reset the game over info
         gameBoard.gameOver = false;
         scoreBoard.setGameOverLabelVisible(false);
 
+        //get the first tetrominofalling
         gameBoard.currentTetromino = gameBoard.factory.createRandomTetromino();
 
+        //create main thread with the game loop
         new Thread(new gameStart()).start();
     }
 
@@ -71,7 +75,7 @@ public class Game extends JFrame implements KeyListener {
         gameBoard.currentPosition = new Point(defaultSpawn.x, defaultSpawn.y);
     }
 
-    public boolean fallDown() {
+    private boolean fallDown() {
         boolean gameOver = false;
         if (!collidesWith(gameBoard.currentPosition.x, gameBoard.currentPosition.y + 1, gameBoard.currentTetromino.getCurrentShape())) {
             gameBoard.currentPosition.y++;
@@ -89,7 +93,7 @@ public class Game extends JFrame implements KeyListener {
         return gameOver;
     }
 
-    public boolean addToBoard() {
+    private boolean addToBoard() {
         boolean gameOver = false;
         for (Point singlePoint : gameBoard.currentTetromino.getCurrentShape()) {
             if (gameBoard.currentPosition.y + singlePoint.y < 3) {
@@ -101,7 +105,7 @@ public class Game extends JFrame implements KeyListener {
     }
 
 
-    public void pushTopDown(int row) {
+    private void pushTopDown(int row) {
         for (int y = row; y > 0; y--) {
             for (int x = 1; x < GAMEBOARD_WIDTH - 1; x++) {
                 gameBoard.boardMap[x][y] = gameBoard.boardMap[x][y-1];
@@ -164,28 +168,28 @@ public class Game extends JFrame implements KeyListener {
 
     }
 
-    public void rotateLeft() {
+    private void rotateLeft() {
         if (!collidesWith(gameBoard.currentPosition.x, gameBoard.currentPosition.y, gameBoard.currentTetromino.getLeftRotationShape())) {
             gameBoard.currentTetromino.rotateLeft();
         }
         gameBoard.repaint();
     }
 
-    public void rotateRight() {
+    private void rotateRight() {
         if (!collidesWith(gameBoard.currentPosition.x, gameBoard.currentPosition.y, gameBoard.currentTetromino.getRightRotationShape())) {
             gameBoard.currentTetromino.rotateRight();
         }
         gameBoard.repaint();
     }
 
-    public void moveLeft() {
+    private void moveLeft() {
         if (!collidesWith(gameBoard.currentPosition.x - 1, gameBoard.currentPosition.y, gameBoard.currentTetromino.getCurrentShape())) {
             gameBoard.currentPosition.x--;
         }
         gameBoard.repaint();
     }
 
-    public void moveRight() {
+    private void moveRight() {
         if (!collidesWith(gameBoard.currentPosition.x + 1, gameBoard.currentPosition.y, gameBoard.currentTetromino.getCurrentShape())) {
             gameBoard.currentPosition.x++;
         }
@@ -216,8 +220,10 @@ public class Game extends JFrame implements KeyListener {
                 gameBoard.currentTetromino = gameBoard.factory.createRandomTetromino();
                 break;
             case KeyEvent.VK_SPACE:
-                fallDown();
-                score++;
+                if (!gameBoard.gameOver) {
+                    fallDown();
+                    score++;
+                }
                 break;
             case KeyEvent.VK_R:
                 if (gameBoard.gameOver) {
@@ -234,7 +240,6 @@ public class Game extends JFrame implements KeyListener {
     }
 
     class gameStart implements Runnable{
-
         @Override
         public void run() {
             boolean isOver = false;
@@ -249,7 +254,7 @@ public class Game extends JFrame implements KeyListener {
                     e.printStackTrace();
                 }
             }
-            System.out.println("GAME OVER!");
+
             gameOver();
         }
     }

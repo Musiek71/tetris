@@ -63,35 +63,23 @@ public class ScoreBoard extends JPanel {
         pressRLabel.setVisible(false);
         this.add(pressRLabel);
 
-
-
     }
 
-    void setGameOverLabelVisible(boolean flag) {
+    public void setGameOverLabelVisible(boolean flag) {
         gameOverLabel.setVisible(flag);
         pressRLabel.setVisible(flag);
     }
 
-    void setScore(int score) {
+    public void setScore(int score) {
         scoreLabel.setText("Score:" + score);
     }
 
-    void setLevel(int level) {
+    public void setLevel(int level) {
         levelLabel.setText("Level:" + level);
     }
 
-    void setRows(int rows) {
+    public void setRows(int rows) {
         rowsLabel.setText("Rows:" + rows);
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-//        g.setColor(Color.LIGHT_GRAY);
-//        g.fillRect(GAMEBOARD_WIDTH * BLOCK_SIZE,
-//                0,
-//                SCOREBOARD_WIDTH * BLOCK_SIZE,
-//                SCOREBOARD_HEIGHT * BLOCK_SIZE);
-    }
 }
