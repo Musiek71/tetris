@@ -160,7 +160,7 @@ public class Game extends JFrame implements KeyListener {
                 score += 1200 * (level + 1);
                 break;
         }
-        
+
 
     }
 
