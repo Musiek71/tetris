@@ -1,12 +1,9 @@
 package Tetris;
 
-import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.File;
-import java.io.IOException;
 
 import static Tetris.Main.*;
 
@@ -34,10 +31,9 @@ public class Game extends JFrame implements KeyListener {
         scoreBoard = new ScoreBoard();
         gameBoard.setPreferredSize(new Dimension(GAMEBOARD_WIDTH * BLOCK_SIZE, GAMEBOARD_HEIGHT * BLOCK_SIZE));
         scoreBoard.setPreferredSize(new Dimension(SCOREBOARD_WIDTH * BLOCK_SIZE, SCOREBOARD_HEIGHT * BLOCK_SIZE));
-        //gameBoard.setSize(GAMEBOARD_WIDTH * BLOCK_SIZE, GAMEBOARD_HEIGHT * BLOCK_SIZE);
-        //scoreBoard.setSize(SCOREBOARD_WIDTH * BLOCK_SIZE, SCOREBOARD_HEIGHT * BLOCK_SIZE);
-        gameBoard.setBackground(Color.LIGHT_GRAY);
-        scoreBoard.setBackground(Color.LIGHT_GRAY);
+
+        gameBoard.setBackground(Color.BLACK);
+        scoreBoard.setBackground(Color.BLACK);
 
         this.getContentPane().add(gameBoard);
         this.getContentPane().add(scoreBoard);
@@ -50,27 +46,24 @@ public class Game extends JFrame implements KeyListener {
 
 
     public void start() {
+        //prepares the gameBoard
         gameBoard.init();
+
+        score = 0;
+        totalRows = 0;
+        level = 0;
+
+        gameBoard.gameOver = false;
+        scoreBoard.setGameOverLabelVisible(false);
 
         gameBoard.currentTetromino = gameBoard.factory.createRandomTetromino();
 
-        new Thread() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        Long time1 = System.nanoTime();
-                        fallDown();
-                        Long time2 = System.nanoTime();
-                        Long delta = (time2 - time1) / 1000000;
-                        Thread.sleep(500 - delta - level * 50);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }.start();
+        new Thread(new gameStart()).start();
+    }
 
+    private void gameOver() {
+        gameBoard.gameOver = true;
+        scoreBoard.setGameOverLabelVisible(true);
     }
 
     private void newTetromino() {
@@ -78,11 +71,12 @@ public class Game extends JFrame implements KeyListener {
         gameBoard.currentPosition = new Point(defaultSpawn.x, defaultSpawn.y);
     }
 
-    public void fallDown() {
+    public boolean fallDown() {
+        boolean gameOver = false;
         if (!collidesWith(gameBoard.currentPosition.x, gameBoard.currentPosition.y + 1, gameBoard.currentTetromino.getCurrentShape())) {
             gameBoard.currentPosition.y++;
         } else {
-            addToBoard();
+            gameOver = addToBoard();
             clearRows();
             updateLevel();
             newTetromino();
@@ -91,12 +85,19 @@ public class Game extends JFrame implements KeyListener {
         scoreBoard.setLevel(level);
         scoreBoard.setRows(totalRows);
         gameBoard.repaint();
+
+        return gameOver;
     }
 
-    public void addToBoard() {
+    public boolean addToBoard() {
+        boolean gameOver = false;
         for (Point singlePoint : gameBoard.currentTetromino.getCurrentShape()) {
+            if (gameBoard.currentPosition.y + singlePoint.y < 3) {
+                gameOver = true;
+            }
             gameBoard.boardMap[gameBoard.currentPosition.x + singlePoint.x][gameBoard.currentPosition.y + singlePoint.y] = gameBoard.currentTetromino.getColorInt();
         }
+        return gameOver;
     }
 
 
@@ -159,8 +160,7 @@ public class Game extends JFrame implements KeyListener {
                 score += 1200 * (level + 1);
                 break;
         }
-
-        lineCounter = 0;
+        
 
     }
 
@@ -219,6 +219,11 @@ public class Game extends JFrame implements KeyListener {
                 fallDown();
                 score++;
                 break;
+            case KeyEvent.VK_R:
+                if (gameBoard.gameOver) {
+                    start();
+                }
+                break;
         }
         gameBoard.repaint();
     }
@@ -226,6 +231,27 @@ public class Game extends JFrame implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
 
+    }
+
+    class gameStart implements Runnable{
+
+        @Override
+        public void run() {
+            boolean isOver = false;
+            while (!isOver) {
+                try {
+                    Long time1 = System.nanoTime();
+                    isOver = fallDown();
+                    Long time2 = System.nanoTime();
+                    Long delta = (time2 - time1) / 1000000;
+                    Thread.sleep(500 - delta - level * 50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println("GAME OVER!");
+            gameOver();
+        }
     }
 
 }

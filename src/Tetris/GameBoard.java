@@ -19,6 +19,8 @@ public class GameBoard extends JPanel {
     Image tBlockTexture;
     Image zBlockTexture;
 
+    boolean gameOver = false;
+
     public Point currentPosition = new Point(defaultSpawn.x, defaultSpawn.y);
     public int[][] boardMap = new int[GAMEBOARD_WIDTH][GAMEBOARD_HEIGHT];
     public TetrominoFactory factory = new TetrominoFactory();
@@ -29,10 +31,13 @@ public class GameBoard extends JPanel {
         GridLayout gameBoardLayout = new GridLayout(1, 1);
         this.setLayout(gameBoardLayout);
 
-        //System.out.println(System.getProperty("user.dir"));
-
         initTextures();
 
+        restartBoardMap();
+
+    }
+
+    void restartBoardMap() {
         //set boardMap's borders to WALL Texture
         for (int x = 0; x < GAMEBOARD_WIDTH; x++) {
             for (int y = 0; y < GAMEBOARD_HEIGHT; y++) {
@@ -43,7 +48,6 @@ public class GameBoard extends JPanel {
                 }
             }
         }
-
     }
 
     void initTextures() {

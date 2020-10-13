@@ -12,12 +12,14 @@ public class ScoreBoard extends JPanel {
     JLabel scoreLabel;
     JLabel rowsLabel;
     JLabel levelLabel;
+    JLabel gameOverLabel;
+    JLabel pressRLabel;
     Image logo;
 
 
     ScoreBoard() {
         super();
-        GridLayout layout = new GridLayout(4, 1);
+        GridLayout layout = new GridLayout(6, 1);
 
         this.setLayout(layout);
 
@@ -35,19 +37,39 @@ public class ScoreBoard extends JPanel {
         }
 
         levelLabel = new JLabel("Level:" + 0);
-        levelLabel.setFont(new Font("Verdana", Font.BOLD, 24));
+        levelLabel.setFont(new Font("Verdana", Font.BOLD, 32));
+        levelLabel.setForeground(Color.WHITE);
         this.add(levelLabel);
 
         rowsLabel = new JLabel("Rows:" + 0);
-        rowsLabel.setFont(new Font("Verdana", Font.BOLD, 24));
+        rowsLabel.setFont(new Font("Verdana", Font.BOLD, 32));
+        rowsLabel.setForeground(Color.WHITE);
         this.add(rowsLabel);
 
         scoreLabel = new JLabel("Score:" + 0);
-        scoreLabel.setFont(new Font("Verdana", Font.BOLD, 24));
+        scoreLabel.setFont(new Font("Verdana", Font.BOLD, 32));
+        scoreLabel.setForeground(Color.WHITE);
         this.add(scoreLabel);
 
+        gameOverLabel = new JLabel("GAME OVER!");
+        gameOverLabel.setFont(new Font("Verdana", Font.BOLD, 48));
+        gameOverLabel.setForeground(Color.WHITE);
+        gameOverLabel.setVisible(false);
+        this.add(gameOverLabel);
+
+        pressRLabel = new JLabel("Press R to play again!");
+        pressRLabel.setFont(new Font("Verdana", Font.BOLD, 32));
+        pressRLabel.setForeground(Color.WHITE);
+        pressRLabel.setVisible(false);
+        this.add(pressRLabel);
 
 
+
+    }
+
+    void setGameOverLabelVisible(boolean flag) {
+        gameOverLabel.setVisible(flag);
+        pressRLabel.setVisible(flag);
     }
 
     void setScore(int score) {
