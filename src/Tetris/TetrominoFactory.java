@@ -1,5 +1,6 @@
 package Tetris;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -21,6 +22,7 @@ public class TetrominoFactory {
 
         return next;
     }
+
 
     private ArrayList<Tetromino> getMixedTetrominosArray() {
         ArrayList<Tetromino> tetrominos = new ArrayList<>();

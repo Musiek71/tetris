@@ -60,7 +60,8 @@ public class Game extends JFrame implements KeyListener {
         scoreBoard.setGameOverLabelVisible(false);
 
         //get the first tetrominofalling
-        gameBoard.currentTetromino = gameBoard.factory.createRandomTetromino();
+        //gameBoard.currentTetromino = gameBoard.factory.createRandomTetromino();
+        newTetromino();
 
         //create main thread with the game loop
         new Thread(new gameStart()).start();
@@ -74,6 +75,9 @@ public class Game extends JFrame implements KeyListener {
     private void newTetromino() {
         gameBoard.currentTetromino = gameBoard.factory.createRandomTetromino();
         gameBoard.currentPosition = new Point(defaultSpawn.x, defaultSpawn.y);
+
+        gameBoard.ghostTetrominoShape = gameBoard.currentTetromino.getCurrentShape();
+        gameBoard.currentGhostPosition = new Point(defaultSpawn.x, defaultSpawn.y);
     }
 
     private boolean fallDown() {
@@ -90,7 +94,11 @@ public class Game extends JFrame implements KeyListener {
         scoreBoard.setScore(score);
         scoreBoard.setLevel(level);
         scoreBoard.setRows(totalRows);
+
+        setGhostLocation();
+
         gameBoard.repaint();
+        //gameBoard.paintComponent(gameBoard.getGraphics());
 
         return gameOver;
     }
@@ -129,6 +137,17 @@ public class Game extends JFrame implements KeyListener {
         }
 
         return false;
+    }
+
+    private void setGhostLocation() {
+        gameBoard.ghostTetrominoShape = gameBoard.currentTetromino.getCurrentShape();
+        gameBoard.currentGhostPosition.x = gameBoard.currentPosition.x;
+        gameBoard.currentGhostPosition.y = gameBoard.currentPosition.y;
+
+        while (!collidesWith(gameBoard.currentGhostPosition.x, gameBoard.currentGhostPosition.y + 1, gameBoard.ghostTetrominoShape)) {
+            gameBoard.currentGhostPosition.y++;
+        }
+
     }
 
     private void clearRows() {
@@ -225,28 +244,32 @@ public class Game extends JFrame implements KeyListener {
         if (!collidesWith(gameBoard.currentPosition.x, gameBoard.currentPosition.y, gameBoard.currentTetromino.getLeftRotationShape())) {
             gameBoard.currentTetromino.rotateLeft();
         }
-        gameBoard.repaint();
+        setGhostLocation();
+        gameBoard.paintComponent(gameBoard.getGraphics());
     }
 
     private void rotateRight() {
         if (!collidesWith(gameBoard.currentPosition.x, gameBoard.currentPosition.y, gameBoard.currentTetromino.getRightRotationShape())) {
             gameBoard.currentTetromino.rotateRight();
         }
-        gameBoard.repaint();
+        setGhostLocation();
+        gameBoard.paintComponent(gameBoard.getGraphics());
     }
 
     private void moveLeft() {
         if (!collidesWith(gameBoard.currentPosition.x - 1, gameBoard.currentPosition.y, gameBoard.currentTetromino.getCurrentShape())) {
             gameBoard.currentPosition.x--;
         }
-        gameBoard.repaint();
+        setGhostLocation();
+        gameBoard.paintComponent(gameBoard.getGraphics());
     }
 
     private void moveRight() {
         if (!collidesWith(gameBoard.currentPosition.x + 1, gameBoard.currentPosition.y, gameBoard.currentTetromino.getCurrentShape())) {
             gameBoard.currentPosition.x++;
         }
-        gameBoard.repaint();
+        setGhostLocation();
+        gameBoard.paintComponent(gameBoard.getGraphics());
     }
 
     @Override
@@ -285,7 +308,7 @@ public class Game extends JFrame implements KeyListener {
                 }
                 break;
         }
-        gameBoard.repaint();
+
     }
 
     @Override

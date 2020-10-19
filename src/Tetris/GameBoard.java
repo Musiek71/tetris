@@ -27,6 +27,9 @@ public class GameBoard extends JPanel {
     public TetrominoFactory factory = new TetrominoFactory();
     public Tetromino currentTetromino;
 
+    public Point currentGhostPosition = new Point(defaultSpawn.x, defaultSpawn.y);
+    public Point[] ghostTetrominoShape;
+
 
     void init() {
         GridLayout gameBoardLayout = new GridLayout(1, 1);
@@ -110,6 +113,16 @@ public class GameBoard extends JPanel {
         }
     }
 
+    private void drawGhost(Graphics g) {
+        g.setColor(Color.WHITE);
+        for (Point singlePoint : ghostTetrominoShape) {
+            g.drawRect((currentGhostPosition.x + singlePoint.x) * BLOCK_SIZE,
+                    (currentGhostPosition.y + singlePoint.y - 3) * BLOCK_SIZE,
+                    BLOCK_SIZE,
+                    BLOCK_SIZE );
+        }
+    }
+
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -152,22 +165,12 @@ public class GameBoard extends JPanel {
                         g.fillRect(x * BLOCK_SIZE, (y - 3) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
                         break;
                 }
-//                if (boardMap[x][y] == 0) {
-//                    g.setColor(Color.BLACK);
-//                    g.fillRect(x * BLOCK_SIZE, (y - 3) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-//                } else if (boardMap[x][y] == 1) {
-//                    g.drawImage(wallTexture, x * BLOCK_SIZE, (y - 3) * BLOCK_SIZE, this);
-//                } else {
-//                    //draw texture
-//                    g.drawImage(blockTexture, x * BLOCK_SIZE, (y - 3) * BLOCK_SIZE, this);
-//                    //outline
-//                    g.setColor(Color.DARK_GRAY);
-//                    g.drawRect(x * BLOCK_SIZE, (y - 3) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-//                }
             }
         }
 
         drawTetromino(g);
+
+        drawGhost(g);
 
     }
 
