@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 import static Tetris.Main.*;
 
@@ -81,9 +82,10 @@ public class Game extends JFrame implements KeyListener {
             gameBoard.currentPosition.y++;
         } else {
             gameOver = addToBoard();
+            newTetromino();
+            animateRows();
             clearRows();
             updateLevel();
-            newTetromino();
         }
         scoreBoard.setScore(score);
         scoreBoard.setLevel(level);
@@ -133,7 +135,7 @@ public class Game extends JFrame implements KeyListener {
         boolean foundFullRow;
         int lineCounter = 0;
 
-        //find all full rows
+
         for(int y = GAMEBOARD_HEIGHT - 2; y > 0; y--) {
             foundFullRow = true;
             for (int x = 1; x < GAMEBOARD_WIDTH - 1; x++) {
@@ -164,7 +166,58 @@ public class Game extends JFrame implements KeyListener {
                 score += 1200 * (level + 1);
                 break;
         }
+    }
 
+    private void animateRows() {
+        boolean foundFullRow;
+        ArrayList<Integer> rows = new ArrayList<>();
+
+        for(int y = GAMEBOARD_HEIGHT - 2; y > 0; y--) {
+            foundFullRow = true;
+            for (int x = 1; x < GAMEBOARD_WIDTH - 1; x++) {
+                if (gameBoard.boardMap[x][y] == 0) {
+                    foundFullRow = false;
+                }
+            }
+            if (foundFullRow) {
+                rows.add(y);
+            }
+        }
+
+        System.out.println(rows.toString());
+
+        if (!rows.isEmpty()) {
+            for (int i = 0; i < 3; i++) {
+                for (int y : rows) {
+                    for (int x = 1; x < GAMEBOARD_WIDTH - 1; x++) {
+                        gameBoard.boardMap[x][y] = 0;
+                    }
+                }
+
+                try {
+                    ///gameBoard.repaint();
+                    gameBoard.paintComponent(gameBoard.getGraphics());
+                    Thread.sleep(150);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                for (int y : rows) {
+                    for (int x = 1; x < GAMEBOARD_WIDTH - 1; x++) {
+                        gameBoard.boardMap[x][y] = 9;
+                    }
+                }
+
+                try {
+                    //gameBoard.repaint();
+                    gameBoard.paintComponent(gameBoard.getGraphics());
+                    Thread.sleep(150);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
 
     }
 
@@ -220,6 +273,7 @@ public class Game extends JFrame implements KeyListener {
                 gameBoard.currentTetromino = gameBoard.factory.createRandomTetromino();
                 break;
             case KeyEvent.VK_SPACE:
+                //TODO reimplement as it doesn't work with thread sleeps
                 if (!gameBoard.gameOver) {
                     fallDown();
                     score++;
@@ -249,7 +303,8 @@ public class Game extends JFrame implements KeyListener {
                     isOver = fallDown();
                     Long time2 = System.nanoTime();
                     Long delta = (time2 - time1) / 1000000;
-                    Thread.sleep(500 - delta - level * 50);
+                    //Thread.sleep(500 - delta - level * 50);
+                    Thread.sleep(500 - level * 50);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

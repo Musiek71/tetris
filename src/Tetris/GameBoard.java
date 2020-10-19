@@ -20,6 +20,7 @@ public class GameBoard extends JPanel {
     Image zBlockTexture;
 
     boolean gameOver = false;
+    boolean blinkClearedRows = false;
 
     public Point currentPosition = new Point(defaultSpawn.x, defaultSpawn.y);
     public int[][] boardMap = new int[GAMEBOARD_WIDTH][GAMEBOARD_HEIGHT];
@@ -145,6 +146,11 @@ public class GameBoard extends JPanel {
                     case 8:
                         g.drawImage(tBlockTexture,x * BLOCK_SIZE, (y - 3) * BLOCK_SIZE, this);
                         break;
+                    case 9:
+                        //blink white
+                        g.setColor(Color.WHITE);
+                        g.fillRect(x * BLOCK_SIZE, (y - 3) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                        break;
                 }
 //                if (boardMap[x][y] == 0) {
 //                    g.setColor(Color.BLACK);
@@ -162,6 +168,7 @@ public class GameBoard extends JPanel {
         }
 
         drawTetromino(g);
+
     }
 
 
