@@ -283,7 +283,7 @@ public class Game extends JFrame implements KeyListener {
                 break;
             case KeyEvent.VK_SPACE:
                 //TODO reimplement as it doesn't work with thread sleeps
-                if (!gameBoard.gameOver) {
+                if (!gameBoard.gameOver && !gameBoard.clearingRows) {
                     fallDown();
                     score++;
                 }
@@ -320,16 +320,16 @@ public class Game extends JFrame implements KeyListener {
                             desiredSleepTime = 500;
                         }
                         gameBoard.repaint();
-                        Long time2 = System.nanoTime();
-                        Long delta = (time2 - time1) / 1000000;
-                        //Thread.sleep(500 - delta - level * 50);
-                        Thread.sleep(desiredSleepTime );
                     } else {
                         isOver = fallDown();
-                        Long time2 = System.nanoTime();
-                        Long delta = (time2 - time1) / 1000000;
-                        //Thread.sleep(500 - delta - level * 50);
-                        Thread.sleep(desiredSleepTime - level * 50);
+                    }
+
+                    Long time2 = System.nanoTime();
+                    Long delta = (time2 - time1) / 1000000;
+                    if (desiredSleepTime == 500) {
+                        Thread.sleep(500 - delta - level * 30);
+                    } else {
+                        Thread.sleep(desiredSleepTime);
                     }
 
                 } catch (InterruptedException e) {
