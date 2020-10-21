@@ -24,7 +24,7 @@ public class ScoreBoard extends JPanel {
         this.setLayout(layout);
 
         try {
-            logo = ImageIO.read(new File("logo.png"));
+            logo = ImageIO.read(getClass().getClassLoader().getResource("logo.png"));
 
             JLabel titlePanel = new JLabel(new ImageIcon(logo));
             this.add(titlePanel);

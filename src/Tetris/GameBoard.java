@@ -20,7 +20,7 @@ public class GameBoard extends JPanel {
     Image zBlockTexture;
 
     boolean gameOver = false;
-    boolean blinkClearedRows = false;
+    boolean clearingRows = false;
 
     public Point currentPosition = new Point(defaultSpawn.x, defaultSpawn.y);
     public int[][] boardMap = new int[GAMEBOARD_WIDTH][GAMEBOARD_HEIGHT];
@@ -56,14 +56,15 @@ public class GameBoard extends JPanel {
 
     void initTextures() {
         try {
-            wallTexture = ImageIO.read(new File("wall.png"));
-            iBlockTexture = ImageIO.read(new File("itext.png"));
-            jBlockTexture = ImageIO.read(new File("jtext.png"));
-            lBlockTexture = ImageIO.read(new File("ltext.png"));
-            oBlockTexture = ImageIO.read(new File("otext.png"));
-            sBlockTexture = ImageIO.read(new File("stext.png"));
-            tBlockTexture = ImageIO.read(new File("ttext.png"));
-            zBlockTexture = ImageIO.read(new File("ztext.png"));
+            System.out.println(System.getProperty("user.dir"));
+            wallTexture = ImageIO.read(getClass().getClassLoader().getResource("wall.png"));
+            iBlockTexture = ImageIO.read(getClass().getClassLoader().getResource("itext.png"));
+            jBlockTexture = ImageIO.read(getClass().getClassLoader().getResource("jtext.png"));
+            lBlockTexture = ImageIO.read(getClass().getClassLoader().getResource("ltext.png"));
+            oBlockTexture = ImageIO.read(getClass().getClassLoader().getResource("otext.png"));
+            sBlockTexture = ImageIO.read(getClass().getClassLoader().getResource("stext.png"));
+            tBlockTexture = ImageIO.read(getClass().getClassLoader().getResource("ttext.png"));
+            zBlockTexture = ImageIO.read(getClass().getClassLoader().getResource("ztext.png"));
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -164,13 +165,20 @@ public class GameBoard extends JPanel {
                         g.setColor(Color.WHITE);
                         g.fillRect(x * BLOCK_SIZE, (y - 3) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
                         break;
+                    case 10:
+                        //blink gray
+                        g.setColor(Color.LIGHT_GRAY);
+                        g.fillRect(x * BLOCK_SIZE, (y - 3) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                        break;
                 }
             }
         }
 
         drawTetromino(g);
 
-        drawGhost(g);
+        if (!clearingRows) {
+            drawGhost(g);
+        }
 
     }
 

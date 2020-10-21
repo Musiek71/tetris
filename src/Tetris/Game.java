@@ -19,6 +19,9 @@ public class Game extends JFrame implements KeyListener {
     private int score = 0;
     private int totalRows = 0;
     private int level = 0;
+    private int clearingCounter = 0;
+    private int desiredSleepTime = 500;
+    private int blinkTime = 150;
 
     public Game(String s) throws HeadlessException {
         super(s);
@@ -88,7 +91,7 @@ public class Game extends JFrame implements KeyListener {
             gameOver = addToBoard();
             newTetromino();
             animateRows();
-            clearRows();
+            //clearRows();
             updateLevel();
         }
         scoreBoard.setScore(score);
@@ -206,37 +209,23 @@ public class Game extends JFrame implements KeyListener {
         System.out.println(rows.toString());
 
         if (!rows.isEmpty()) {
-            for (int i = 0; i < 3; i++) {
-                for (int y : rows) {
-                    for (int x = 1; x < GAMEBOARD_WIDTH - 1; x++) {
-                        gameBoard.boardMap[x][y] = 0;
+            for (int y : rows) {
+                for (int x = 1; x < GAMEBOARD_WIDTH - 1; x++) {
+                    switch (clearingCounter % 2) {
+                        case 0:
+                            gameBoard.boardMap[x][y] = 9;
+                            break;
+                        case 1:
+                            gameBoard.boardMap[x][y] = 10;
+                            break;
                     }
-                }
-
-                try {
-                    ///gameBoard.repaint();
-                    gameBoard.paintComponent(gameBoard.getGraphics());
-                    Thread.sleep(150);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                for (int y : rows) {
-                    for (int x = 1; x < GAMEBOARD_WIDTH - 1; x++) {
-                        gameBoard.boardMap[x][y] = 9;
-                    }
-                }
-
-                try {
-                    //gameBoard.repaint();
-                    gameBoard.paintComponent(gameBoard.getGraphics());
-                    Thread.sleep(150);
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
 
+            gameBoard.clearingRows = true;
+            desiredSleepTime = blinkTime;
         }
+
 
     }
 
@@ -245,7 +234,7 @@ public class Game extends JFrame implements KeyListener {
             gameBoard.currentTetromino.rotateLeft();
         }
         setGhostLocation();
-        gameBoard.paintComponent(gameBoard.getGraphics());
+        gameBoard.repaint();
     }
 
     private void rotateRight() {
@@ -253,7 +242,7 @@ public class Game extends JFrame implements KeyListener {
             gameBoard.currentTetromino.rotateRight();
         }
         setGhostLocation();
-        gameBoard.paintComponent(gameBoard.getGraphics());
+        gameBoard.repaint();
     }
 
     private void moveLeft() {
@@ -261,7 +250,7 @@ public class Game extends JFrame implements KeyListener {
             gameBoard.currentPosition.x--;
         }
         setGhostLocation();
-        gameBoard.paintComponent(gameBoard.getGraphics());
+        gameBoard.repaint();
     }
 
     private void moveRight() {
@@ -269,7 +258,7 @@ public class Game extends JFrame implements KeyListener {
             gameBoard.currentPosition.x++;
         }
         setGhostLocation();
-        gameBoard.paintComponent(gameBoard.getGraphics());
+        gameBoard.repaint();
     }
 
     @Override
@@ -291,9 +280,6 @@ public class Game extends JFrame implements KeyListener {
                 break;
             case KeyEvent.VK_RIGHT:
                 moveRight();
-                break;
-            case KeyEvent.VK_S:
-                gameBoard.currentTetromino = gameBoard.factory.createRandomTetromino();
                 break;
             case KeyEvent.VK_SPACE:
                 //TODO reimplement as it doesn't work with thread sleeps
@@ -323,11 +309,29 @@ public class Game extends JFrame implements KeyListener {
             while (!isOver) {
                 try {
                     Long time1 = System.nanoTime();
-                    isOver = fallDown();
-                    Long time2 = System.nanoTime();
-                    Long delta = (time2 - time1) / 1000000;
-                    //Thread.sleep(500 - delta - level * 50);
-                    Thread.sleep(500 - level * 50);
+                    if (gameBoard.clearingRows) {
+                        if (clearingCounter <= 3) {
+                            animateRows();
+                            clearingCounter++;
+                        } else {
+                            clearRows();
+                            clearingCounter = 0;
+                            gameBoard.clearingRows = false;
+                            desiredSleepTime = 500;
+                        }
+                        gameBoard.repaint();
+                        Long time2 = System.nanoTime();
+                        Long delta = (time2 - time1) / 1000000;
+                        //Thread.sleep(500 - delta - level * 50);
+                        Thread.sleep(desiredSleepTime );
+                    } else {
+                        isOver = fallDown();
+                        Long time2 = System.nanoTime();
+                        Long delta = (time2 - time1) / 1000000;
+                        //Thread.sleep(500 - delta - level * 50);
+                        Thread.sleep(desiredSleepTime - level * 50);
+                    }
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
